@@ -1,0 +1,21 @@
+:root {
+  /* Light mode (default) */
+  --color-background: #F5F5F5; /* Light gray */
+  --color-text: #333333; /* Dark gray */
+  --color-accent: #FF6B6B; /* Pink */
+  --color-card: #E0E0E0; /* Lighter gray for cards */
+}
+
+.dark {
+  /* Dark mode */
+  --color-background: #1A1A1A; /* Dark gray */
+  --color-text: #E5E5E5; /* Light gray */
+  --color-accent: #FF6B6B; /* Pink (same for consistency, can adjust if needed) */
+  --color-card: #2A2A2A; /* Slightly lighter gray for cards */
+}
+
+/* Apply the variables globally */
+:root {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}

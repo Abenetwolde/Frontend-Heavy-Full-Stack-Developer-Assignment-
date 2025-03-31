@@ -1,0 +1,43 @@
+@import 'tailwindcss';
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+@theme {
+  --color-theme-bg: var(--color-bg);
+  --color-theme-text: var(--color-text);
+  --color-theme-accent: var(--color-accent);
+  --color-theme-card: var(--color-card);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
+
+@layer base {
+  .light {
+    --color-bg: #F5F5F5; /* Light gray */
+    --color-text: #333333; /* Dark gray */
+    --color-accent: #FF6B6B; /* Pink */
+    --color-card: #E0E0E0; /* Lighter gray for cards */
+  }
+
+  .dark {
+    --color-bg: #1A1A1A; /* Dark gray */
+    --color-text: #E5E5E5; /* Light gray */
+    --color-accent: #FF6B6B; /* Pink (same for consistency) */
+    --color-card: #2A2A2A; /* Slightly lighter gray for cards */
+  }
+
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}

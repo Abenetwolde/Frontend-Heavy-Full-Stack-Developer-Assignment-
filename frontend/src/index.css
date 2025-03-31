@@ -1,0 +1,28 @@
+@import "tailwindcss";
+/* Import Tailwind base, components, and utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define CSS variables for theming */
+:root {
+  /* Light mode (default) */
+  --color-background: 245, 245, 245; /* #F5F5F5 */
+  --color-text: 51, 51, 51; /* #333333 */
+  --color-accent: 255, 107, 107; /* #FF6B6B */
+  --color-card: 224, 224, 224; /* #E0E0E0 */
+}
+
+.dark {
+  /* Dark mode */
+  --color-background: 26, 26, 26; /* #1A1A1A */
+  --color-text: 229, 229, 229; /* #E5E5E5 */
+  --color-accent: 255, 107, 107; /* #FF6B6B */
+  --color-card:  #2A2A2A 
+}
+
+/* Apply the variables to the body */
+body {
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-text));
+}
