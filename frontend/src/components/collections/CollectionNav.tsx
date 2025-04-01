@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react';
 import { useState } from 'react';
 
 interface CollectionNavProps {
@@ -14,7 +15,15 @@ export const CollectionNav: React.FC<CollectionNavProps> = ({ onTabChange }) => 
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-theme-text text-xl font-semibold">Collections</h2>
+      {/* Title Row with Three-Dot Icon */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-theme-text text-xl font-semibold">Collections</h2>
+        <button className="text-gray-500 hover:text-gray-700 transition">
+          <Icon icon="mdi:dots-horizontal" className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Tabs */}
       <div className="flex gap-2">
         <button
           onClick={() => handleTabChange('favourites')}

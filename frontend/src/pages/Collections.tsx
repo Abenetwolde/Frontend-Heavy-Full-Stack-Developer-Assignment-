@@ -1,5 +1,6 @@
 import { CollectionNav } from '../components/collections/CollectionNav';
 import { CollectionCard } from '../components/collections/CollectionCard';
+import { AddCollectionCard } from '../components/collections/AddCollectionCard';
 import { MainLayout } from '../layouts/MainLayout';
 import { Collection } from '../types/collection';
 
@@ -33,7 +34,7 @@ const collections: Collection[] = [
     id: 4,
     name: 'Groceries',
     taskCount: 10,
-    completedTasks: 7,
+    completedTasks: 2,
     icon: 'mdi:cart',
     color: 'bg-yellow-500',
   },
@@ -46,12 +47,18 @@ export const Collections: React.FC = () => {
 
   return (
     <MainLayout activeTab="collections">
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 max-w-3xl mx-auto w-full">
         <CollectionNav onTabChange={handleTabChange} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {collections.map((collection) => (
-            <CollectionCard key={collection.id} collection={collection} />
+            <div key={collection.id}>
+              <CollectionCard collection={collection} />
+            </div>
           ))}
+          {/* Add Collection Card */}
+          <div className="h-[100px]">
+            <AddCollectionCard />
+          </div>
         </div>
       </div>
     </MainLayout>
