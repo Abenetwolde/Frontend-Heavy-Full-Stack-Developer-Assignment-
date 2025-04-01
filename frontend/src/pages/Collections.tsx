@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { CollectionNav } from '../components/collections/CollectionNav';
 import { CollectionCard } from '../components/collections/CollectionCard';
 import { AddCollectionCard } from '../components/collections/AddCollectionCard';
 import { MainLayout } from '../layouts/MainLayout';
 import { Collection } from '../types/collection';
+import { AddCollectionModal } from '../components/collections/AddCollectionModal'; // Import the modal
 
 // Mock data (replace with API data later)
-const collections: Collection[] = [
+const initialCollections: Collection[] = [
   {
     id: 1,
     name: 'School',
@@ -41,8 +43,15 @@ const collections: Collection[] = [
 ];
 
 export const Collections: React.FC = () => {
+  const [collections, setCollections] = useState<Collection[]>(initialCollections);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleTabChange = (tab: 'favourites' | 'all') => {
     console.log(`Tab changed to: ${tab}`);
+  };
+
+  const handleAddCollection = (newCollection: Collection) => {
+    setCollections([...collections, newCollection]);
   };
 
   return (
@@ -57,10 +66,17 @@ export const Collections: React.FC = () => {
           ))}
           {/* Add Collection Card */}
           <div className="h-[100px]">
-            <AddCollectionCard />
+            <AddCollectionCard onClick={() => setIsModalOpen(true)} />
           </div>
         </div>
       </div>
+
+      {/* Add Collection Modal */}
+      <AddCollectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleAddCollection}
+      />
     </MainLayout>
   );
 };

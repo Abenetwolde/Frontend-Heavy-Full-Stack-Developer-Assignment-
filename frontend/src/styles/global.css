@@ -5,6 +5,10 @@
   --color-theme-text: var(--color-text);
   --color-theme-accent: var(--color-accent);
   --color-theme-card: var(--color-card);
+  --color-gradient-start: var(--color-gradient-start);
+  --color-gradient-end: var(--color-gradient-end);
+  --color-gradient-start-hover: var(--color-gradient-start-hover);
+  --color-gradient-end-hover: var(--color-gradient-end-hover);
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -20,17 +24,25 @@
     --color-teal-500: #2DD4BF; /* Teal for Personal */
     --color-purple-500: #A78BFA; /* Purple for Design */
     --color-yellow-500: #FBBF24; /* Yellow for Groceries */
+    --color-gradient-start: #C44EC9; /* Gradient start color */
+    --color-gradient-end: #FF9586; /* Gradient end color */
+    --color-gradient-start-hover: #B041B5; /* Slightly darker for hover */
+    --color-gradient-end-hover: #FF7A66; /* Slightly darker for hover */
   }
 
   .dark {
     --color-bg: #1A1A1A; /* Dark gray */
     --color-text: #E5E5E5; /* Light gray */
-    --color-accent: #FF6B6B; /* Pink (same for consistency) */
+    --color-accent: #D66294; /* Pink (same for consistency) */
     --color-card: #2A2A2A; /* Slightly lighter gray for cards */
-    --color-pink-500: #FF6B6B; /* Pink for School */
+    --color-pink-500: #C44EC9; /* Pink for School */
     --color-teal-500: #2DD4BF; /* Teal for Personal */
     --color-purple-500: #A78BFA; /* Purple for Design */
     --color-yellow-500: #FBBF24; /* Yellow for Groceries */
+    --color-gradient-start: #C44EC9; /* Gradient start color */
+    --color-gradient-end: #FF9586; /* Gradient end color */
+    --color-gradient-start-hover: #B041B5; /* Slightly darker for hover */
+    --color-gradient-end-hover: #FF7A66; /* Slightly darker for hover */
   }
 
   html {

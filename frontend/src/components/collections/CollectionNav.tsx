@@ -29,8 +29,8 @@ export const CollectionNav: React.FC<CollectionNavProps> = ({ onTabChange }) => 
           onClick={() => handleTabChange('favourites')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
             activeTab === 'favourites'
-              ? 'bg-theme-accent text-white'
-              : 'bg-theme-card text-theme-text hover:bg-opacity-80'
+              ? 'bg-gray-600 text-white'
+              : 'bg-transparent border border-gray-600 text-theme-text hover:bg-gray-800'
           }`}
         >
           Favourites
@@ -39,8 +39,8 @@ export const CollectionNav: React.FC<CollectionNavProps> = ({ onTabChange }) => 
           onClick={() => handleTabChange('all')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
             activeTab === 'all'
-              ? 'bg-theme-accent text-white'
-              : 'bg-theme-card text-theme-text hover:bg-opacity-80'
+              ? 'bg-gray-600 text-white'
+              : 'bg-transparent border border-gray-600 text-theme-text hover:bg-gray-800'
           }`}
         >
           All Collections

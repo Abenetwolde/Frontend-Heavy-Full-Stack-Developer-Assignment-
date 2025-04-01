@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react';
 import { useState, useEffect } from 'react';
 import { Task } from '../../types/task';
 import { collections } from '../../data/dummyData';
+import { useNavigate } from 'react-router-dom';
 
 interface AddEditTaskModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface AddEditTaskModalProps {
   onSave: (task: Task) => void;
   task?: Task;
   collectionId: number;
+  fromNavbar?: boolean; // New prop to indicate if called from navbar
 }
 
 export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
@@ -17,7 +19,9 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
   onSave,
   task,
   collectionId,
+  fromNavbar = false,
 }) => {
+  const navigate = useNavigate();
   const [name, setName] = useState(task?.name || '');
   const [completed, setCompleted] = useState(task?.completed || false);
   const [tag, setTag] = useState(task?.tag || '');
@@ -26,6 +30,7 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
   );
   const [subTasks, setSubTasks] = useState<Task[]>(task?.subTasks || []);
   const [isSubTasksExpanded, setIsSubTasksExpanded] = useState(false);
+  const [flagColor, setFlagColor] = useState<'red' | 'green' | ''>(task?.tag === 'Today' ? 'green' : '');
 
   useEffect(() => {
     if (task) {
@@ -34,12 +39,14 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
       setTag(task.tag || '');
       setSelectedCollectionId(task.collection_id);
       setSubTasks(task.subTasks || []);
+      setFlagColor(task.tag === 'Today' ? 'green' : task.tag ? 'red' : '');
     } else {
       setName('');
       setCompleted(false);
       setTag('');
       setSelectedCollectionId(collectionId);
       setSubTasks([]);
+      setFlagColor('');
     }
   }, [task, collectionId]);
 
@@ -47,7 +54,7 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
     setSubTasks([
       ...subTasks,
       {
-        id: Date.now(), // Temporary ID for new subtasks
+        id: Date.now(),
         name: 'New Subtask',
         completed: false,
         collection_id: selectedCollectionId,
@@ -68,9 +75,22 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
     );
   };
 
+  const handleFlagToggle = () => {
+    if (flagColor === '') {
+      setFlagColor('red');
+      setTag('');
+    } else if (flagColor === 'red') {
+      setFlagColor('green');
+      setTag('Today');
+    } else {
+      setFlagColor('');
+      setTag('');
+    }
+  };
+
   const handleSave = () => {
     const updatedTask: Task = {
-      id: task?.id || Date.now(), // Temporary ID for new tasks
+      id: task?.id || Date.now(),
       name,
       completed,
       tag: tag || undefined,
@@ -79,7 +99,13 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
     };
     onSave(updatedTask);
     onClose();
+    // Redirect to the selected collection page if called from navbar
+    if (fromNavbar) {
+      navigate(`/collections/${selectedCollectionId}`);
+    }
   };
+
+  const currentCollection = collections.find((col) => col.id === selectedCollectionId);
 
   if (!isOpen) return null;
 
@@ -92,63 +118,61 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Task name"
-          className="bg-theme-bg text-theme-text p-3 rounded-lg text-sm"
+          className="bg-[#2A3232] text-white p-3 rounded-lg text-sm placeholder-gray-400"
         />
 
         {/* Collection Selection */}
-        <div className="flex flex-col gap-2">
-          <h3 className="text-theme-text text-sm font-semibold">Collection</h3>
-          <div className="flex gap-2 flex-wrap">
-            {collections.map((collection) => (
-              <button
-                key={collection.id}
-                onClick={() => setSelectedCollectionId(collection.id)}
-                className={`flex items-center gap-2 px-3 py-1 rounded-lg transition ${
-                  selectedCollectionId === collection.id
-                    ? 'bg-theme-accent text-white'
-                    : 'bg-theme-bg text-theme-text'
-                }`}
-              >
-                <div className={`${collection.color} rounded-full p-1`}>
-                  <Icon icon={collection.icon} className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-sm">{collection.name}</span>
-              </button>
-            ))}
+        {fromNavbar ? (
+          <div className="flex flex-col gap-2">
+            <h3 className="text-white text-sm font-semibold">Collection</h3>
+            <select
+              value={selectedCollectionId}
+              onChange={(e) => setSelectedCollectionId(Number(e.target.value))}
+              className="bg-[#2A3232] text-white p-3 rounded-lg text-sm"
+            >
+              {collections.map((collection) => (
+                <option key={collection.id} value={collection.id}>
+                  {collection.name}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className={`${currentCollection?.color} rounded-full p-1`}>
+              <Icon icon={currentCollection?.icon || 'mdi:folder'} className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-white text-sm">{currentCollection?.name || 'Design'}</span>
+          </div>
+        )}
 
-        {/* Tag Selection */}
-        <div className="flex flex-col gap-2">
-          <h3 className="text-theme-text text-sm font-semibold">Tag</h3>
-          <div className="flex gap-2">
-            {['Today', 'Monday', 'Thursday'].map((tagOption) => (
-              <button
-                key={tagOption}
-                onClick={() => setTag(tagOption === tag ? '' : tagOption)}
-                className={`px-3 py-1 rounded-lg text-sm transition ${
-                  tag === tagOption
-                    ? tagOption === 'Today'
-                      ? 'bg-green-500 text-white'
-                      : tagOption === 'Monday'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-orange-500 text-white'
-                    : 'bg-theme-bg text-theme-text'
-                }`}
-              >
-                {tagOption}
-              </button>
-            ))}
-          </div>
+        {/* Tag Selection with Flag Toggle */}
+        <div className="flex gap-2 items-center">
+          <button
+            onClick={() => setTag(tag === 'Today' ? '' : 'Today')}
+            className={`px-3 py-1 rounded-lg text-sm transition ${
+              tag === 'Today' ? 'bg-green-500 text-white' : 'bg-[#2A3232] text-white'
+            }`}
+          >
+            Today
+          </button>
+          <button onClick={handleFlagToggle} className="p-1">
+            <Icon
+              icon="mdi:flag"
+              className={`w-5 h-5 ${
+                flagColor === 'red' ? 'text-red-500' : flagColor === 'green' ? 'text-green-500' : 'text-gray-400'
+              }`}
+            />
+          </button>
         </div>
 
         {/* Subtasks Section */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <h3 className="text-theme-text text-sm font-semibold">Subtasks</h3>
+            <h3 className="text-white text-sm font-semibold">Subtasks</h3>
             <button
               onClick={() => setIsSubTasksExpanded(!isSubTasksExpanded)}
-              className="text-theme-text/50"
+              className="text-gray-400"
             >
               <Icon
                 icon={isSubTasksExpanded ? 'mdi:chevron-down' : 'mdi:chevron-up'}
@@ -164,11 +188,11 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
                     type="text"
                     value={subTask.name}
                     onChange={(e) => handleSubTaskChange(subTask.id, e.target.value)}
-                    className="bg-theme-bg text-theme-text p-2 rounded-lg flex-1 text-sm"
+                    className="bg-[#2A3232] text-white p-2 rounded-lg flex-1 text-sm"
                   />
                   <button
                     onClick={() => handleRemoveSubTask(subTask.id)}
-                    className="text-theme-text/50 hover:text-theme-text"
+                    className="text-gray-400 hover:text-white"
                   >
                     <Icon icon="mdi:close" className="w-5 h-5" />
                   </button>
@@ -176,7 +200,7 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
               ))}
               <button
                 onClick={handleAddSubTask}
-                className="text-theme-accent hover:text-theme-accent/80 text-sm"
+                className="text-pink-500 hover:text-pink-400 text-sm"
               >
                 + Add Subtask
               </button>
@@ -188,13 +212,13 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
         <div className="flex gap-2 mt-4">
           <button
             onClick={handleSave}
-            className="bg-theme-accent text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition flex-1"
+            className="bg-gradient-to-r from-gradient-start to-gradient-end text-white px-4 py-2 rounded-lg hover:from-gradient-start-hover hover:to-gradient-end-hover transition flex-1"
           >
             {task ? 'Save' : 'Add Task'}
           </button>
           <button
             onClick={onClose}
-            className="bg-theme-bg text-theme-text px-4 py-2 rounded-lg hover:bg-opacity-80 transition flex-1"
+            className="bg-[#2A3232] text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition flex-1"
           >
             Cancel
           </button>
