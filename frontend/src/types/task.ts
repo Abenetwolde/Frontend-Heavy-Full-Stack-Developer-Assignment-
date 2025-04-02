@@ -1,8 +1,16 @@
+// src/types/task.ts
 export interface Task {
     id: number;
-    name: string;
+    title: string;
+    date: string; // ISO string from API
     completed: boolean;
-    tag?: string;
-    collection_id: number;
-    subTasks?: Task[];
+    collectionId: number;
+    subtasks: Subtask[];
+  }
+  
+  export interface Subtask {
+    id: number;
+    title: string;
+    completed: boolean;
+    taskId: number;
   }

@@ -1,85 +1,104 @@
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { Collection } from '../../types/collection';
 import Chart from 'react-apexcharts';
+import { useDeleteCollectionMutation } from '../../api/endpoints/collections';
+// import { useDeleteCollectionMutation } from '../../store/api';
 
 interface CollectionCardProps {
   collection: Collection;
 }
 
-export const CollectionCard: React.FC<CollectionCardProps> = ({ collection }) => {
+export const CollectionCard: React.FC<CollectionCardProps> = ({ collection }:any) => {
   const navigate = useNavigate();
-  const progress = (collection.completedTasks / collection.taskCount) * 100;
+  const [showDelete, setShowDelete] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteCollection] = useDeleteCollectionMutation();
 
-  // Map the collection's color to the progress bar color
+  const progress = collection.taskCount === 0 ? 0 : (collection.completedTasks / collection.taskCount) * 100;
   const progressColor = collection.color.replace('bg-', '');
 
+  const handleDelete = async () => {
+    await deleteCollection(collection.id);
+    setConfirmDelete(false);
+  };
   const handleClick = () => {
-    navigate(`/collections/${collection.name.toLowerCase()}`);
+    navigate(`/collections/${collection.name.toLowerCase()}`); // Keep name for URL, ID is fetched in CollectionTasks
   };
-
-  // ApexCharts configuration for the circular progress bar
-  const chartOptions: any = {
-    chart: {
-      type: 'radialBar' as const,
-      height: 24,
-      width: 24,
-    },
-    plotOptions: {
-      radialBar: {
-        hollow: {
-       
-          size: '20%', // Reduced from 50% to 30% to make the bar thicker
-        },
-        track: {
-          background: 'rgba(255, 255, 255, 0.2)', // Background track color
-        },
-        dataLabels: {
-          show: false, // Hide the percentage label in the center
-        },
-      },
-    },
-    colors: [`var(--color-${progressColor})`], // Match the progress bar color to the icon
-    series: [progress], // The progress value (e.g., 50 for 4/8)
-    stroke: {
-      // width: 8, // Width of the progress bar
-      lineCap: 'round', // Rounded ends for the progress bar
-    },
-  };
-
   return (
     <div
+      className="bg-theme-card/80 rounded-lg p-4 flex flex-col gap-3 w-full transition hover:bg-opacity-60 cursor-pointer relative"
+      onMouseEnter={() => setShowDelete(true)}
+      onMouseLeave={() => setShowDelete(false)}
       onClick={handleClick}
-      className="bg-theme-card/80 rounded-lg p-4 flex flex-col gap-3 w-full transition hover:bg-opacity-60 cursor-pointer"
     >
-      {/* Icon and Name */}
+      {showDelete && (
+        <button
+          className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+          onClick={(e) => {
+            e.stopPropagation();
+            setConfirmDelete(true);
+          }}
+        >
+          <Icon icon="mdi:trash-can-outline" className="w-5 h-5" />
+        </button>
+      )}
       <div className="flex items-center gap-3">
         <div className={`${collection.color} rounded-full p-2`}>
           <Icon icon={collection.icon} className="w-5 h-5 text-white" />
         </div>
       </div>
-      
-      {/* Task Count and Progress */}
       <div className="flex items-center justify-between">
         <p className="text-theme-text/70 text-sm">
-        <h3 className="text-theme-text text-base font-semibold">{collection.name}</h3>
+          <h3 className="text-theme-text text-base font-semibold">{collection.name}</h3>
           {collection.completedTasks}/{collection.taskCount} done
         </p>
         <div className="flex items-center gap-2 justify-center">
-          <div className="w-15 h-15 ">
-
-          <Chart
-            options={chartOptions}
-            series={chartOptions.series}
-            type="radialBar"
-            height={"100%"} // Adjust the height of the chart as needed
-            width={"100%"} // Adjust the width of the chart as needed
-      // Adjust the height of the chart as needed
-
-          />
+          <div className="w-15 h-15">
+            <Chart
+              options={{
+                chart: { type: 'radialBar' as const },
+                plotOptions: {
+                  radialBar: {
+                    hollow: { size: '20%' },
+                    track: { background: 'rgba(255, 255, 255, 0.2)' },
+                    dataLabels: { show: false },
+                  },
+                },
+                colors: [`var(--color-${progressColor})`],
+                series: [progress],
+                stroke: { lineCap: 'round' },
+              }}
+              series={[progress]}
+              type="radialBar"
+              height="100%"
+              width="100%"
+            />
+          </div>
+        </div>
       </div>
-      </div>
-      </div>
+      {confirmDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-100">
+          <div className="bg-theme-card p-4 rounded-lg shadow-lg">
+            <p className="text-theme-text mb-4">Are you sure you want to delete this collection?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-700"
+                onClick={() => setConfirmDelete(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-3 py-1 bg-theme-accent text-white rounded-md hover:bg-gradient-start-hover"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

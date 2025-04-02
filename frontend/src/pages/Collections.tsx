@@ -5,6 +5,7 @@ import { AddCollectionCard } from '../components/collections/AddCollectionCard';
 import { MainLayout } from '../layouts/MainLayout';
 import { Collection } from '../types/collection';
 import { AddCollectionModal } from '../components/collections/AddCollectionModal'; // Import the modal
+import { useAddCollectionMutation, useGetCollectionsQuery } from '../api/endpoints/collections';
 
 // Mock data (replace with API data later)
 const initialCollections: Collection[] = [
@@ -43,39 +44,77 @@ const initialCollections: Collection[] = [
 ];
 
 export const Collections: React.FC = () => {
-  const [collections, setCollections] = useState<Collection[]>(initialCollections);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Fetch collections with RTK Query
+  const { data: collections, isLoading, error, refetch } = useGetCollectionsQuery(undefined, {
+    pollingInterval: 30000, // Refetch every 30 seconds for "real-time" updates
+  });
+
+  // Mutation for adding a collection
+  const [addCollection, { isLoading: isAdding }] = useAddCollectionMutation();
 
   const handleTabChange = (tab: 'favourites' | 'all') => {
     console.log(`Tab changed to: ${tab}`);
+    // Add filtering logic here if needed
   };
 
-  const handleAddCollection = (newCollection: Collection) => {
-    setCollections([...collections, newCollection]);
+  const handleAddCollection = async (newCollection: Partial<Collection>) => {
+    try {
+      await addCollection(newCollection).unwrap();
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error('Failed to add collection:', err);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <MainLayout activeTab="collections">
+        <div className="flex justify-center items-center h-screen">
+          <p className="text-theme-text">Loading collections...</p>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <MainLayout activeTab="collections">
+        <div className="flex flex-col items-center gap-4 max-w-3xl mx-auto w-full">
+          <p className="text-red-500">Error loading collections: {(error as any).message}</p>
+          <button
+            onClick={refetch}
+            className="bg-theme-button text-white px-4 py-2 rounded hover:bg-opacity-80"
+          >
+            Retry
+          </button>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout activeTab="collections">
       <div className="flex flex-col gap-6 max-w-3xl mx-auto w-full">
         <CollectionNav onTabChange={handleTabChange} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {collections.map((collection) => (
+          {collections?.map((collection) => (
             <div key={collection.id}>
               <CollectionCard collection={collection} />
             </div>
           ))}
-          {/* Add Collection Card */}
           <div className="h-[100px]">
             <AddCollectionCard onClick={() => setIsModalOpen(true)} />
           </div>
         </div>
       </div>
 
-      {/* Add Collection Modal */}
       <AddCollectionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleAddCollection}
+        isLoading={isAdding}
       />
     </MainLayout>
   );

@@ -2,24 +2,25 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 
 interface Collection {
-  id: number;
-  name: string;
-  icon: string;
-  color: string;
-  taskCount?: number;
-  completedTasks?: number;
-}
-
+    id?: number; // Make optional
+    name: string;
+    icon: string;
+    color?: string; // Make optional
+    taskCount?: number;
+    completedTasks?: number;
+  }
 interface AddCollectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (collection: Collection) => void;
+  isLoading: boolean;
 }
 
 export const AddCollectionModal: React.FC<AddCollectionModalProps> = ({
   isOpen,
   onClose,
   onSave,
+  isLoading
 }) => {
   const [name, setName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('mdi:folder');
@@ -40,12 +41,10 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = ({
     if (!name.trim()) return; // Prevent saving if name is empty
 
     const newCollection: Collection = {
-      id: Date.now(), // Temporary ID
+ // Temporary ID
       name,
       icon: selectedIcon,
-      color: defaultColor,
-      taskCount: 0, // Default values for taskCount and completedTasks
-      completedTasks: 0,
+
     };
     onSave(newCollection);
     onClose();
@@ -96,7 +95,7 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = ({
             onClick={handleSave}
             className="bg-gradient-to-r from-gradient-start to-gradient-end text-white px-4 py-2 rounded-lg hover:from-gradient-start-hover hover:to-gradient-end-hover transition flex-1"
           >
-            Add Collection
+        {isLoading ? 'Saving...' : 'Save'}
           </button>
           <button
             onClick={onClose}

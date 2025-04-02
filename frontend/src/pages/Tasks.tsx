@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { collections } from '../data/dummyData';
 import { TaskItem } from '../components/tasks/TaskItem';
 import { MainLayout } from '../layouts/MainLayout';
@@ -13,22 +13,40 @@ import { addTask, editTask, deleteTask } from '../store/slices/tasksSlice';
 import { AddEditTaskModal } from '../components/tasks/AddEditTaskModal';
 import { useAppSelector ,useAppDispatch} from '../store/hooks';
 import { Task } from '../types/task';
+import { useGetCollectionsQuery } from '../api/endpoints/collections';
+import { useAddSubtaskMutation, useAddTaskMutation, useDeleteTaskMutation, useGetTasksByCollectionIdQuery, useGetTasksQuery, useUpdateTaskMutation } from '../api/endpoints/tasks';
 
-export const SchoolTasks: React.FC = () => {
+export const CollectionTasks: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const tasks = useAppSelector((state) => state.tasks);
+  const { collectionName } = useParams<{ collectionName: string }>();
 
-  // Filter tasks for the "School" collection (collection_id: 1)
-  const schoolTasks = tasks.filter((task) => task.collection_id === 1);
-  const activeTasks = schoolTasks.filter((task) => !task.completed);
-  const completedTasks = schoolTasks.filter((task) => task.completed);
+  const { data: collections, isLoading: isCollectionsLoading } = useGetCollectionsQuery();
+  const collection = collections?.find(
+    (c) => c.name.toLowerCase() === collectionName?.toLowerCase()
+  );
+  const collectionId = collection?.id;
 
-  // State for dialogs
+  const {
+    data: tasks,
+    isLoading: isTasksLoading,
+    error,
+  } = useGetTasksByCollectionIdQuery(collectionId!, {
+    skip: !collectionId,
+    pollingInterval: 30000,
+  });
+
+  const [addTask] = useAddTaskMutation();
+  const [updateTask] = useUpdateTaskMutation();
+  const [deleteTask] = useDeleteTaskMutation();
+  const [addSubtask] = useAddSubtaskMutation();
+
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
   const [taskToDelete, setTaskToDelete] = useState<number | undefined>(undefined);
+
+  const activeTasks = tasks?.filter((task) => !task.completed) || [];
+  const completedTasks = tasks?.filter((task) => task.completed) || [];
 
   const handleAddTask = () => {
     setSelectedTask(undefined);
@@ -45,65 +63,96 @@ export const SchoolTasks: React.FC = () => {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleSaveTask = (task: Task) => {
-    if (selectedTask) {
-      dispatch(editTask(task));
-    } else {
-      dispatch(addTask(task));
+  const handleSaveTask = async (task: Task, subtasks?: { title: string }[]) => {
+    try {
+      if (selectedTask) {
+        // Update existing task
+        await updateTask({ id: task.id, data: task }).unwrap();
+        
+        // Handle subtasks updates would go here (you might need additional logic)
+      } else {
+        // Create new task
+        const newTask = await addTask({
+          title: task.title,
+          date: task.date,
+          collectionId: task.collectionId,
+          completed: task.completed
+        }).unwrap();
+        
+        // Create subtasks if they exist
+        if (subtasks && subtasks.length > 0) {
+          await Promise.all(
+            subtasks.map(subtask => 
+              addSubtask({
+                title: subtask.title,
+                taskId: newTask.id,
+                completed: false
+              }).unwrap()
+            )
+          );
+        }
+      }
+      setIsTaskModalOpen(false);
+    } catch (err) {
+      console.error('Failed to save task:', err);
     }
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (taskToDelete) {
-      dispatch(deleteTask(taskToDelete));
+      await deleteTask(taskToDelete).unwrap();
       setIsDeleteDialogOpen(false);
       setTaskToDelete(undefined);
     }
   };
 
+  if (isCollectionsLoading || (collectionId && isTasksLoading)) {
+    return <div>Loading...</div>;
+  }
+
+  if (error || !collection) {
+    return <div>Error loading tasks or collection not found: {(error as any)?.message}</div>;
+  }
+
   return (
     <MainLayout activeTab="collections" hideSidebar={true}>
       <div className="flex flex-col lg:flex-row min-h-screen">
-        {/* Separate Sidebar for Collections */}
         <div className="bg-theme-card w-full lg:w-64 p-4 flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <h1 className="text-theme-text text-xl font-semibold">Collections</h1>
           </div>
           <nav className="flex flex-col gap-2">
-            {collections.map((collection) => (
+            {collections?.map((col) => (
               <button
-                key={collection.id}
-                onClick={() => navigate(`/collections/${collection.name.toLowerCase()}`)}
+                key={col.id}
+                onClick={() => navigate(`/collections/${col.name.toLowerCase()}`)}
                 className={`flex items-center gap-3 p-2 rounded-lg transition ${
-                  collection.name === 'School'
+                  col.name.toLowerCase() === collectionName?.toLowerCase()
                     ? 'bg-theme-accent text-white'
                     : 'text-theme-text hover:bg-opacity-80'
                 }`}
               >
-                <div className={`${collection.color} rounded-full p-1.5`}>
-                  <Icon icon={collection.icon} className="w-4 h-4 text-white" />
+                <div className={`${col.color} rounded-full p-1.5`}>
+                  <Icon icon={col.icon} className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-sm">{collection.name}</span>
+                <span className="text-sm">{col.name}</span>
               </button>
             ))}
           </nav>
         </div>
 
-        {/* Main Content */}
         <div className="flex-1 p-4 lg:p-6 bg-theme-bg">
           <div className="max-w-5xl mx-auto w-full flex flex-col gap-6">
-            {/* Header with Back Button and Title */}
             <div className="flex items-center gap-3">
               <button onClick={() => navigate('/collections')} className="text-theme-text">
                 <Icon icon="mdi:chevron-left" className="w-6 h-6" />
               </button>
-              <h1 className="text-theme-text text-2xl font-semibold">School</h1>
+              <h1 className="text-theme-text text-2xl font-semibold">{collection.name}</h1>
               <button className="ml-auto text-theme-text/50 hover:text-theme-text transition">
                 <Icon icon="mdi:dots-horizontal" className="w-6 h-6" />
               </button>
             </div>
 
-            {/* Add Task Button */}
             <button
               onClick={handleAddTask}
               className="flex items-center gap-2 bg-theme-accent text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition w-fit"
@@ -112,7 +161,6 @@ export const SchoolTasks: React.FC = () => {
               <span>Add a task</span>
             </button>
 
-            {/* Tasks Section */}
             <div className="flex flex-col gap-4">
               <h2 className="text-theme-text text-lg font-semibold">
                 Tasks - {activeTasks.length}
@@ -129,7 +177,6 @@ export const SchoolTasks: React.FC = () => {
               </div>
             </div>
 
-            {/* Completed Section */}
             {completedTasks.length > 0 && (
               <div className="flex flex-col gap-4">
                 <h2 className="text-theme-text text-lg font-semibold">
@@ -150,21 +197,19 @@ export const SchoolTasks: React.FC = () => {
           </div>
         </div>
 
-        {/* Task Modal */}
         <AddEditTaskModal
-          isOpen={isTaskModalOpen}
-          onClose={() => setIsTaskModalOpen(false)}
-          onSave={handleSaveTask}
-          task={selectedTask}
-          collectionId={1} // School collection ID
-        />
+        isOpen={isTaskModalOpen}
+        onClose={() => setIsTaskModalOpen(false)}
+        onSave={handleSaveTask}
+        task={selectedTask}
+        collectionId={collectionId}
+      />
 
-        {/* Delete Confirmation Dialog */}
-        <DeleteConfirmationDialog
-          isOpen={isDeleteDialogOpen}
-          onClose={() => setIsDeleteDialogOpen(false)}
-          onConfirm={handleConfirmDelete}
-        />
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+      />
       </div>
     </MainLayout>
   );

@@ -5,7 +5,10 @@
   "main": "server.ts",
   "scripts": {
     "start": "node dist/server.js",
-  "dev": "nodemon src/server.ts"
+    "dev": "nodemon src/server.ts",
+    "seed": "ts-node prisma/seed.ts",
+    "migrate": "npx prisma migrate dev",
+    "generate": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +18,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
     "morgan": "^1.10.0",
-    "prisma": "^6.5.0"
+    "prisma": "^6.5.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -25,6 +30,7 @@
     "@types/helmet": "^4.0.0",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.14",
+    "@types/winston": "^2.4.4",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
     "nodemon": "^3.1.9",
