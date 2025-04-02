@@ -1,0 +1,20 @@
+{
+  "dashboard": "ዳሽቦርድ",
+  "collections": "ስብስቦች",
+  "dark": "ጨለማ",
+  "light": "ብርሃን",
+  "done": "ተጠናቀቀ",
+  "add_new_collection": "አዲስ ስብስብ ያክሉ",
+  "select_icon": "አዶ ይምረጡ",
+  "save": "አስቀምጥ",
+  "cancel": "ተወው",
+  "subtasks": "ንዑስ ተግባሮች",
+  "add_tasks": "ተግባር ያክሉ",
+  "all_collections": "ሁሉም ስብስቦች",
+  "favorites": "የሚወደዱ",
+  "select_language": "Select Language",
+  "language_sub": "Choose your preferred language for the app; you can adjust it later",
+  "next": "Next",
+  "skip": "Skip",
+  "start": "Start"
+}

@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface CollectionNavProps {
   onTabChange: (tab: 'favourites' | 'all') => void;
@@ -7,7 +8,7 @@ interface CollectionNavProps {
 
 export const CollectionNav: React.FC<CollectionNavProps> = ({ onTabChange }) => {
   const [activeTab, setActiveTab] = useState<'favourites' | 'all'>('all');
-
+const { t } = useTranslation(); // Assuming you have a translation function
   const handleTabChange = (tab: 'favourites' | 'all') => {
     setActiveTab(tab);
     onTabChange(tab);
@@ -33,7 +34,7 @@ export const CollectionNav: React.FC<CollectionNavProps> = ({ onTabChange }) => 
               : 'bg-transparent border border-gray-600 text-theme-text hover:bg-gray-800'
           }`}
         >
-          Favourites
+         {t('favorites')}
         </button>
         <button
           onClick={() => handleTabChange('all')}
@@ -43,7 +44,7 @@ export const CollectionNav: React.FC<CollectionNavProps> = ({ onTabChange }) => 
               : 'bg-transparent border border-gray-600 text-theme-text hover:bg-gray-800'
           }`}
         >
-          All Collections
+          {t('all_collections')}
         </button>
       </div>
     </div>

@@ -31,7 +31,7 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
   const [subTasks, setSubTasks] = useState<{ title: string; completed?: boolean }[]>(
     task?.subTasks?.map(st => ({ title: st.title, completed: st.completed })) || []
   );
-  const [isSubTasksExpanded, setIsSubTasksExpanded] = useState(false);
+  const [isSubTasksExpanded, setIsSubTasksExpanded] = useState(true);
 
   useEffect(() => {
     if (task) {
@@ -106,7 +106,7 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Task title"
-          className="bg-[#2A3232] text-white p-3 rounded-lg text-sm placeholder-gray-400"
+          className="bg-theme-bg  text-theme-text p-3 rounded-lg text-sm placeholder-gray-400 border-0 focus:outline-none focus:ring-2 focus:ring-theme-accent"
         />
 
         {/* Date Input */}
@@ -120,14 +120,14 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
         {/* Collection Selection */}
         {fromNavbar ? (
           <div className="flex flex-col gap-2">
-            <h3 className="text-white text-sm font-semibold">Collection</h3>
+            <h3 className="text-theme-text text-sm font-semibold">Collection</h3>
             <select
               value={selectedCollectionId}
               onChange={(e) => setSelectedCollectionId(Number(e.target.value))}
-              className="bg-[#2A3232] text-white p-3 rounded-lg text-sm"
+              className="bg-theme-bg placeholder-gray-400 text-theme-text p-3 rounded-lg text-sm border-0 focus:outline-none focus:ring-2 focus:ring-theme-accent"
             >
               {collections.map((collection) => (
-                <option key={collection.id} value={collection.id}>
+                <option key={collection.id} value={collection.id} className='border-0 focus:outline-none focus:ring-2 focus:ring-theme-accent'>
                   {collection.name}
                 </option>
               ))}
@@ -138,14 +138,14 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
             <div className={`${currentCollection?.color} rounded-full p-1`}>
               <Icon icon={currentCollection?.icon || 'mdi:folder'} className="w-4 h-4 text-white" />
             </div>
-            <span className="text-white text-sm">{currentCollection?.name || 'Design'}</span>
+            <span className="text-theme-text text-sm">{currentCollection?.name || 'Design'}</span>
           </div>
         )}
 
         {/* Subtasks Section */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <h3 className="text-white text-sm font-semibold">Subtasks</h3>
+            <h3 className="text-theme-text text-sm font-semibold">Subtasks</h3>
             <button
               onClick={() => setIsSubTasksExpanded(!isSubTasksExpanded)}
               className="text-gray-400"
@@ -164,7 +164,7 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
                     type="text"
                     value={subTask.title}
                     onChange={(e) => handleSubTaskChange(index, e.target.value)}
-                    className="bg-[#2A3232] text-white p-2 rounded-lg flex-1 text-sm"
+                    className="bg-theme-bg placeholder-gray-400 text-theme-text p-2 rounded-lg flex-1 text-sm border-0 focus:outline-none focus:ring-2 focus:ring-theme-accent"
                   />
                   <button
                     onClick={() => handleRemoveSubTask(index)}
@@ -194,7 +194,7 @@ export const AddEditTaskModal: React.FC<AddEditTaskModalProps> = ({
           </button>
           <button
             onClick={onClose}
-            className="bg-[#2A3232] text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition flex-1"
+            className="bg-theme-bg text-theme-text px-4 py-2 rounded-lg hover:bg-opacity-80 transition flex-1"
           >
             Cancel
           </button>

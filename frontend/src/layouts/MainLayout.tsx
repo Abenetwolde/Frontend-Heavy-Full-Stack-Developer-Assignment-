@@ -4,7 +4,9 @@ import { useTheme } from '../hooks/useTheme';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Task } from '../types/task';
 import { AddEditTaskModal } from '../components/tasks/AddEditTaskModal';
-// Import the AddEditTaskModal
+import { useTranslation } from 'react-i18next';
+import LanguageDropdown from '../components/common/LanguageDropdown';
+// Import your LanguageDropdown component
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -22,6 +24,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const { t } = useTranslation(); // Add this for translation support
 
   const currentPath = location.pathname;
   const isDashboardActive = currentPath === '/dashboard';
@@ -34,6 +37,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   const handleSaveTask = (task: Task) => {
     setTasks([...tasks, task]);
   };
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Main Content Area (Adjusted for Navbar Position) */}
@@ -41,7 +45,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         {/* Sidebar (Mobile) */}
         {!hideSidebar && (
           <div className="lg:hidden flex items-center justify-between p-4 bg-theme-card">
-            <h1 className="text-theme-text text-xl font-semibold">Collections</h1>
+            <h1 className="text-theme-text text-xl font-semibold">{t('collections')}</h1>
             <Icon icon="mdi:dots-horizontal" className="w-6 h-6 text-theme-text" />
           </div>
         )}
@@ -56,9 +60,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <div className="hidden lg:flex items-center justify-between bg-theme-card px-6 py-4">
           {/* Left Side: Dashboard and Collections */}
           <div className="flex items-center gap-10 cursor-pointer">
-            <div className="flex items-center gap-4"              onClick={() => navigate('/dashboard')}>
+            <div className="flex items-center gap-4" onClick={() => navigate('/dashboard')}>
               <button
-  
                 className={`p-2 rounded-lg transition ${
                   isDashboardActive ? 'text-white' : 'text-white/50 hover:text-white/80'
                 }`}
@@ -66,43 +69,42 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 <Icon
                   icon="mdi:view-dashboard"
                   className={`w-6 h-6 ${
-                    isDashboardActive ? 'text-white' : 'text-white/50 hover:text-white/80'
+                    isDashboardActive ? 'text-theme-text' : 'text-theme-text/50 hover:text-theme-text/80'
                   }`}
                 />
               </button>
               <p
                 className={`${
-                  isDashboardActive ? 'text-white' : 'text-white/50 hover:text-white/80'
+                  isDashboardActive ? 'text-theme-text' : 'text-theme-text/50 hover:text-theme-text/80'
                 }`}
               >
-                Dashboard
+                {t('dashboard')}
               </p>
             </div>
-            <div className="flex items-center gap-4 cursor-pointer"    onClick={() => navigate('/collections')}>
+            <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/collections')}>
               <button
-            
                 className={`p-2 rounded-lg transition ${
-                  isCollectionsActive ? 'text-white' : 'text-white/50 hover:text-white/80'
+                  isCollectionsActive ? 'text-theme-text' : 'text-theme-text/50 hover:text-theme-text/80'
                 }`}
               >
                 <Icon
                   icon="mdi:book"
                   className={`w-6 h-6 ${
-                    isCollectionsActive ? 'text-white' : 'text-white/50 hover:text-white/80'
+                    isCollectionsActive ?'text-theme-text' : 'text-theme-text/50 hover:text-theme-text/80'
                   }`}
                 />
               </button>
               <p
                 className={`${
-                  isCollectionsActive ? 'text-white' : 'text-white/50 hover:text-white/80'
+                  isCollectionsActive ?'text-theme-text' : 'text-theme-text/50 hover:text-theme-text/80'
                 }`}
               >
-                Collections
+                {t('collections')}
               </p>
             </div>
           </div>
 
-          {/* Right Side: Add, Search, Theme Toggle */}
+          {/* Right Side: Add, Search, Theme Toggle, Language Dropdown */}
           <div className="flex items-center gap-4">
             <button
               onClick={handleAddClick}
@@ -110,15 +112,19 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
             >
               <Icon icon="mdi:plus" className="w-6 h-6" />
             </button>
-            <button className="p-2 text-theme-text hover:bg-opacity-80 transition">
+            {/* <button className="p-2 text-theme-text hover:bg-opacity-80 transition">
               <Icon icon="mdi:magnify" className="w-6 h-6" />
-            </button>
+            </button> */}
             <button className="p-2 text-theme-text hover:bg-opacity-80 transition relative">
               <Icon icon="mdi:bell" className="w-6 h-6" />
               <span className="absolute -top-1 -right-1 bg-theme-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 3
               </span>
             </button>
+            
+            {/* Add Language Dropdown here */}
+            <LanguageDropdown />
+            
             <div className="flex items-center gap-2">
               <button
                 onClick={toggle}
@@ -129,7 +135,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                   className="w-5 h-5 text-theme-accent"
                 />
                 <span className="text-sm font-semibold">
-                  {mode === 'dark' ? 'Dark' : 'Light'}
+                  {mode === 'dark' ? t('dark') : t('light')}
                 </span>
               </button>
             </div>
@@ -137,9 +143,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         </div>
 
         {/* Mobile/Tablet Navbar (Bottom) */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-theme-card flex justify-around items-center py-3 border-t border-theme-text/10 cursor-pointer"   onClick={() => navigate('/dashboard')}>
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-theme-card flex justify-around items-center py-3 border-t border-theme-text/10">
           <button
-          
+            onClick={() => navigate('/dashboard')}
             className={`p-2 rounded-lg transition ${
               isDashboardActive ? 'text-white' : 'text-white/50 hover:text-white/80'
             }`}
@@ -173,6 +179,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           <button className="p-2 text-theme-text hover:bg-opacity-80 transition">
             <Icon icon="mdi:magnify" className="w-6 h-6" />
           </button>
+          <LanguageDropdown /> {/* Add to mobile navbar if needed */}
           <div className="flex items-center gap-2">
             <button
               onClick={toggle}
@@ -183,7 +190,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 className="w-5 h-5 text-theme-accent"
               />
               <span className="text-sm font-semibold">
-                {mode === 'dark' ? 'Dark' : 'Light'}
+                {mode === 'dark' ? t('dark') : t('light')}
               </span>
             </button>
           </div>
@@ -195,8 +202,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveTask}
-        collectionId={1} // Default collection ID, will be overridden by dropdown
-        fromNavbar={true} // Indicate that the modal is called from the navbar
+        collectionId={1}
+        fromNavbar={true}
       />
     </div>
   );

@@ -1,0 +1,20 @@
+{
+  "dashboard": "Dashboard",
+  "collections": "Collections",
+  "dark": "Dark",
+  "light": "Light",
+  "done": "Done",
+  "add_new_collection": "Add New Collection",
+  "select_icon": "Select Icon",
+  "save": "Save",
+  "cancel": "Cancel",
+  "subtasks": "Subtasks",
+  "add_tasks": "Add Tasks",
+  "all_collections": "All Collections",
+  "favorites": "Favorites",
+  "select_language": "ቋንቋ ይምረጡ",
+  "language_sub": "ለመተግበሪያው የመረጡትን ቋንቋ ይምረጡ; በኋላ ላይ ተጨማሪ ሜኑ ውስጥ ማስተካከል ይችላሉ",
+  "next": "ቀጣይ",
+  "skip": "ዝለል",
+  "start": "ጀምር"
+}

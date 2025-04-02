@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Collection } from '../../types/collection';
 import Chart from 'react-apexcharts';
 import { useDeleteCollectionMutation } from '../../api/endpoints/collections';
+import { useTranslation } from 'react-i18next';
 // import { useDeleteCollectionMutation } from '../../store/api';
 
 interface CollectionCardProps {
@@ -12,6 +13,7 @@ interface CollectionCardProps {
 
 export const CollectionCard: React.FC<CollectionCardProps> = ({ collection }:any) => {
   const navigate = useNavigate();
+const {t}=useTranslation()
   const [showDelete, setShowDelete] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteCollection] = useDeleteCollectionMutation();
@@ -26,6 +28,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ collection }:any
   const handleClick = () => {
     navigate(`/collections/${collection.name.toLowerCase()}`); // Keep name for URL, ID is fetched in CollectionTasks
   };
+
   return (
     <div
       className="bg-theme-card/80 rounded-lg p-4 flex flex-col gap-3 w-full transition hover:bg-opacity-60 cursor-pointer relative"
@@ -52,7 +55,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ collection }:any
       <div className="flex items-center justify-between">
         <p className="text-theme-text/70 text-sm">
           <h3 className="text-theme-text text-base font-semibold">{collection.name}</h3>
-          {collection.completedTasks}/{collection.taskCount} done
+          {collection.completedTasks}/{collection.taskCount} {t('done')}
         </p>
         <div className="flex items-center gap-2 justify-center">
           <div className="w-15 h-15">

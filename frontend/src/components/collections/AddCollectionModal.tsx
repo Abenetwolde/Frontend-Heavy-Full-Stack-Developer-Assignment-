@@ -55,7 +55,7 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-theme-bg flex items-center justify-center z-50">
       <div className="bg-theme-card rounded-lg p-6 w-full max-w-md flex flex-col gap-4">
         {/* Modal Title */}
         <h3 className="text-theme-text text-lg font-semibold">Add New Collection</h3>
@@ -66,12 +66,12 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = ({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Collection name"
-          className="bg-[#2A3232] text-white p-3 rounded-lg text-sm placeholder-gray-400"
+          className="bg-theme-bg p-3 rounded-lg text-sm "
         />
 
         {/* Icon Selection */}
         <div className="flex flex-col gap-2">
-          <h4 className="text-white text-sm font-semibold">Select Icon</h4>
+          <h4 className="text-theme-text text-sm font-semibold">Select Icon</h4>
           <div className="flex gap-2 flex-wrap">
             {availableIcons.map((icon) => (
               <button
@@ -79,8 +79,8 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = ({
                 onClick={() => setSelectedIcon(icon.value)}
                 className={`p-2 rounded-lg transition ${
                   selectedIcon === icon.value
-                    ? 'bg-theme-accent text-white'
-                    : 'bg-[#2A3232] text-white hover:bg-opacity-80'
+                    ? 'bg-theme-accent text-theme-text'
+                    : 'bg-theme-bg text-theme-text hover:bg-opacity-80'
                 }`}
               >
                 <Icon icon={icon.value} className="w-6 h-6" />
@@ -99,7 +99,7 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = ({
           </button>
           <button
             onClick={onClose}
-            className="bg-[#2A3232] text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition flex-1"
+            className="bg-theme-bg text-theme-text px-4 py-2 rounded-lg hover:bg-opacity-80 transition flex-1"
           >
             Cancel
           </button>
