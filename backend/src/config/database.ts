@@ -5,11 +5,11 @@ import { PrismaClient } from '@prisma/client';
 dotenv.config();
 
 export const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'], datasources: {
-    db: {
-      url: process.env.DATABASE_URL + "?sslmode=require"  // Force SSL
-    }
-  }
+  // log: ['query', 'info', 'warn', 'error'], datasources: {
+  //   db: {
+  //     url: process.env.DATABASE_URL + "?sslmode=require"  // Force SSL
+  //   }
+  // }
 });
 
 // Optional: Add error handling for Prisma connection

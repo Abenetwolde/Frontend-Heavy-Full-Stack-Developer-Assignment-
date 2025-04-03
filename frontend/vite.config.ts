@@ -5,8 +5,8 @@ export default defineConfig({
   plugins: [react(),  tailwindcss(),],
   server: {
     port: 3000,
-    proxy: {
-      '/api': 'http://localhost:5000', // Proxy to backend
-    },
+    // proxy: {
+    //   '/api': import.meta.env.VITE_API_BASE_URL, // Proxy to backend
+    // },
   },
 });

@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'http://localhost:5000/api'; // Adjust the base URL as needed
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL // Adjust the base URL as needed
