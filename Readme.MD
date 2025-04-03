@@ -18,7 +18,7 @@ This is an overengineered to-do app built using modern web technologies. It prov
 ![Onboarding Page](https://drive.google.com/file/d/1UlRu9l9uYS7IDcVmcNiabADz0cffG8Og/view?usp=sharing)
 
 ### Localization Support
-![Localization](https://drive.google.com/file/d/1SXvAiHSKl5CvNNGQIlx7LBHqsSrDwDHP/view?usp=sharing)
+![Localization](https://drive.google.com/uc?export=view&id=1SXvAiHSKl5CvNNGQIlx7LBHqsSrDwDHP)
 
 ### Theme Support
 ![Theme](https://drive.google.com/file/d/1Y_VcAUtGCnrFenGpWubVSswDlGw_1tiq/view?usp=sharing)
