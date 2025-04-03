@@ -20,7 +20,7 @@ This is an overengineered to-do app built using modern web technologies. It prov
 ![Localization](https://drive.google.com/uc?export=view&id=1SXvAiHSKl5CvNNGQIlx7LBHqsSrDwDHP)
 
 ### Theme Support
-![Theme](https://drive.google.com/uc?export=view&1Y_VcAUtGCnrFenGpWubVSswDlGw_1tiq)
+![Theme](https://drive.google.com/uc?export=view&id=1UlRu9l9uYS7IDcVmcNiabADz0cffG8Og)
 
 ### Collection Page
 ![Collection](https://drive.google.com/uc?export=view&id=1NkFG8n1bE-fTGr8cRqY1-cOTUe0Lhvgf)
