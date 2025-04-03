@@ -20,13 +20,13 @@ This is an overengineered to-do app built using modern web technologies. It prov
 ![Localization](https://drive.google.com/uc?export=view&id=1UlRu9l9uYS7IDcVmcNiabADz0cffG8Og)
 
 ### Theme Support
-![Theme](https://drive.google.com/uc?export=view&id=1SXvAiHSKl5CvNNGQIlx7LBHqsSrDwDHP)
+![Theme](https://drive.google.com/uc?export=view&id=1Y_VcAUtGCnrFenGpWubVSswDlGw_1tiq)
 
 ### Collection Page
 ![Collection](https://drive.google.com/uc?export=view&id=1NkFG8n1bE-fTGr8cRqY1-cOTUe0Lhvgf)
 
 ### Mobile Responsiveness
-![Mobile](https://drive.google.com/uc?export=view&id=1NkFG8n1bE-fTGr8cRqY1-cOTUe0Lhvgf)
+![Mobile](https://drive.google.com/uc?export=view&id=11F6Rnx_EjH1oKEQqcUdOa10TiJCrp7pb)
 
 ### Add Todo Modal
 ![Add](https://drive.google.com/uc?export=view&id=1tDYI4L3mwBlZNmhC7e-jCCfzV9ZSLpoh)
