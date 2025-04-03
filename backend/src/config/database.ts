@@ -1,8 +1,15 @@
-// src/config/database.ts
+import * as dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 
+// Load environment variables
+dotenv.config();
+
 export const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'],
+  log: ['query', 'info', 'warn', 'error'], datasources: {
+    db: {
+      url: process.env.DATABASE_URL + "?sslmode=require"  // Force SSL
+    }
+  }
 });
 
 // Optional: Add error handling for Prisma connection
