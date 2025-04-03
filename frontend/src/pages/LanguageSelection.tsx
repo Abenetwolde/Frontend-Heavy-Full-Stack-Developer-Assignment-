@@ -20,8 +20,8 @@ const LanguageSelection: React.FC = () => {
   );
 
   const languages: LanguageOption[] = [
-    { code: "en", label: "English", native: "Eng", img: english },
-    { code: "am", label: "Amharic", native: "Amh", img: amharic },
+    { code: "am", label: "English", native: "Eng", img: english },
+    { code: "en", label: "Amharic", native: "Amh", img: amharic },
   ];
 
   const handleChangeLanguage = (newLang: string) => {

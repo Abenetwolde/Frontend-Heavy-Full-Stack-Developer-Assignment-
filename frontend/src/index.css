@@ -24,3 +24,23 @@ body {
   background-color: rgb(var(--color-background));
   color: rgb(var(--color-text));
 }
+/* Add this to your CSS file (e.g., index.css) */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-theme-card) 25%,
+    var(--color-gradient-start) 50%,
+    var(--color-theme-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}

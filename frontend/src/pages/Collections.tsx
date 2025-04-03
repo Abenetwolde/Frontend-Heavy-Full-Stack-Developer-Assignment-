@@ -4,7 +4,7 @@ import { CollectionCard } from '../components/collections/CollectionCard';
 import { AddCollectionCard } from '../components/collections/AddCollectionCard';
 import { MainLayout } from '../layouts/MainLayout';
 import { Collection } from '../types/collection';
-import { AddCollectionModal } from '../components/collections/AddCollectionModal'; // Import the modal
+import { AddCollectionModal } from '../components/collections/AddCollectionModal';
 import { useAddCollectionMutation, useGetCollectionsQuery } from '../api/endpoints/collections';
 
 // Mock data (replace with API data later)
@@ -44,8 +44,8 @@ const initialCollections: Collection[] = [
 ];
 
 export const Collections: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   // Fetch collections with RTK Query
   const { data: collections, isLoading, error, refetch } = useGetCollectionsQuery(undefined, {
     pollingInterval: 30000, // Refetch every 30 seconds for "real-time" updates
@@ -54,12 +54,12 @@ export const Collections: React.FC = () => {
   // Mutation for adding a collection
   const [addCollection, { isLoading: isAdding }] = useAddCollectionMutation();
 
-  const handleTabChange = (tab: 'favourites' | 'all') => {
+  const handleTabChange = (tab: 'favourites' | 'all'): void => {
     console.log(`Tab changed to: ${tab}`);
     // Add filtering logic here if needed
   };
 
-  const handleAddCollection = async (newCollection: Partial<Collection>) => {
+  const handleAddCollection = async (newCollection: Partial<Collection>): Promise<void> => {
     try {
       await addCollection(newCollection).unwrap();
       setIsModalOpen(false);
@@ -71,8 +71,29 @@ export const Collections: React.FC = () => {
   if (isLoading) {
     return (
       <MainLayout activeTab="collections">
-        <div className="flex justify-center items-center h-screen">
-          <p className="text-theme-text">Loading collections...</p>
+        <div className="flex flex-col gap-6 max-w-3xl mx-auto w-full p-4">
+          {/* Skeleton for CollectionNav */}
+          <div className="flex justify-between items-center mb-4">
+            <div className="h-8 w-1/3 bg-theme-card rounded animate-shimmer" />
+            <div className="h-8 w-24 bg-theme-card rounded animate-shimmer" />
+          </div>
+
+          {/* Skeleton for Collection Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="h-32 bg-theme-card rounded-lg animate-shimmer flex flex-col gap-2 p-4">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 bg-gradient-start rounded-md" />
+                  <div className="h-4 w-1/2 bg-theme-bg rounded" />
+                </div>
+                <div className="h-3 w-3/4 bg-theme-bg rounded" />
+                <div className="h-3 w-1/3 bg-theme-bg rounded" />
+              </div>
+            ))}
+            <div className="h-32 bg-theme-card rounded-lg animate-shimmer flex items-center justify-center">
+              <div className="h-6 w-6 bg-gradient-start rounded-full" />
+            </div>
+          </div>
         </div>
       </MainLayout>
     );

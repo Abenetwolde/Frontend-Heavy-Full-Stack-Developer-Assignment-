@@ -56,10 +56,10 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onDoubleClick, onLongP
         <button onClick={handleToggleTask}>
           <div
             className={`w-5 h-5 rounded-full border-2 ${
-              task.completed ? 'bg-theme-accent' : 'border-theme-text/30'
+              task.completed ? 'bg-theme-accent' : 'border-theme-accent'
             } flex items-center justify-center`}
           >
-            {task.completed && <Icon icon="mdi:check" className="w-3 h-3 text-white" />}
+            {task.completed && <Icon icon="mdi:check" className="w-3 h-3 text-theme-white" />}
           </div>
         </button>
         <p
@@ -104,7 +104,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onDoubleClick, onLongP
               <button onClick={() => handleToggleSubtask(subtask.id, subtask.completed)}>
                 <div
                   className={`w-5 h-5 rounded-full border-2 ${
-                    subtask.completed ? 'bg-theme-accent' : 'border-theme-text/30'
+                    subtask.completed ? 'bg-theme-accent' : 'border-theme-accent'
                   } flex items-center justify-center`}
                 >
                   {subtask.completed && <Icon icon="mdi:check" className="w-3 h-3 text-white" />}

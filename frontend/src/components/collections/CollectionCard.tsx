@@ -21,9 +21,11 @@ const {t}=useTranslation()
   const progress = collection.taskCount === 0 ? 0 : (collection.completedTasks / collection.taskCount) * 100;
   const progressColor = collection.color.replace('bg-', '');
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     await deleteCollection(collection.id);
     setConfirmDelete(false);
+
   };
   const handleClick = () => {
     navigate(`/collections/${collection.name.toLowerCase()}`); // Keep name for URL, ID is fetched in CollectionTasks

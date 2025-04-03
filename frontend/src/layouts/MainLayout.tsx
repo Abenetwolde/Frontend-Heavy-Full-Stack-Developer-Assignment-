@@ -6,25 +6,29 @@ import { Task } from '../types/task';
 import { AddEditTaskModal } from '../components/tasks/AddEditTaskModal';
 import { useTranslation } from 'react-i18next';
 import LanguageDropdown from '../components/common/LanguageDropdown';
-// Import your LanguageDropdown component
 
 interface MainLayoutProps {
   children: ReactNode;
   activeTab?: 'dashboard' | 'collections';
   hideSidebar?: boolean;
+  showHamburger?: boolean;
+  onToggleSidebar?: (isExpanded: boolean) => void; // Updated callback to handle both text and width
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   activeTab,
   hideSidebar = false,
+  showHamburger = false,
+  onToggleSidebar,
 }) => {
   const { mode, toggle } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const { t } = useTranslation(); // Add this for translation support
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true); // State for sidebar expansion
+  const { t } = useTranslation();
 
   const currentPath = location.pathname;
   const isDashboardActive = currentPath === '/dashboard';
@@ -38,9 +42,16 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     setTasks([...tasks, task]);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarExpanded(!isSidebarExpanded);
+    if (onToggleSidebar) {
+      onToggleSidebar(!isSidebarExpanded);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Main Content Area (Adjusted for Navbar Position) */}
+      {/* Main Content Area */}
       <div className="flex flex-1 flex-col lg:flex-row">
         {/* Sidebar (Mobile) */}
         {!hideSidebar && (
@@ -58,9 +69,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       <nav className="lg:order-first order-last">
         {/* Desktop Navbar (Top) */}
         <div className="hidden lg:flex items-center justify-between bg-theme-card px-6 py-4">
-          {/* Left Side: Dashboard and Collections */}
-          <div className="flex items-center gap-10 cursor-pointer">
-            <div className="flex items-center gap-4" onClick={() => navigate('/dashboard')}>
+          {/* Left Side: Hamburger (if shown), Dashboard, and Collections */}
+          <div className="flex items-center gap-10">
+            {showHamburger && (
+              <button onClick={toggleSidebar} className="text-theme-text p-2">
+                <Icon icon="mdi:menu" className="w-6 h-6" />
+              </button>
+            )}
+            <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/dashboard')}>
               <button
                 className={`p-2 rounded-lg transition ${
                   isDashboardActive ? 'text-white' : 'text-white/50 hover:text-white/80'
@@ -90,13 +106,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 <Icon
                   icon="mdi:book"
                   className={`w-6 h-6 ${
-                    isCollectionsActive ?'text-theme-text' : 'text-theme-text/50 hover:text-theme-text/80'
+                    isCollectionsActive ? 'text-theme-text' : 'text-theme-text/50 hover:text-theme-text/80'
                   }`}
                 />
               </button>
               <p
                 className={`${
-                  isCollectionsActive ?'text-theme-text' : 'text-theme-text/50 hover:text-theme-text/80'
+                  isCollectionsActive ? 'text-theme-text' : 'text-theme-text/50 hover:text-theme-text/80'
                 }`}
               >
                 {t('collections')}
@@ -112,19 +128,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
             >
               <Icon icon="mdi:plus" className="w-6 h-6" />
             </button>
-            {/* <button className="p-2 text-theme-text hover:bg-opacity-80 transition">
-              <Icon icon="mdi:magnify" className="w-6 h-6" />
-            </button> */}
             <button className="p-2 text-theme-text hover:bg-opacity-80 transition relative">
               <Icon icon="mdi:bell" className="w-6 h-6" />
               <span className="absolute -top-1 -right-1 bg-theme-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 3
               </span>
             </button>
-            
-            {/* Add Language Dropdown here */}
             <LanguageDropdown />
-            
             <div className="flex items-center gap-2">
               <button
                 onClick={toggle}
@@ -176,10 +186,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           >
             <Icon icon="mdi:plus" className="w-8 h-8" />
           </button>
-          <button className="p-2 text-theme-text hover:bg-opacity-80 transition">
+          {/* <button className="p-2 text-theme-text hover:bg-opacity-80 transition">
             <Icon icon="mdi:magnify" className="w-6 h-6" />
-          </button>
-          <LanguageDropdown /> {/* Add to mobile navbar if needed */}
+          </button> */}
+          <LanguageDropdown />
           <div className="flex items-center gap-2">
             <button
               onClick={toggle}
